@@ -13,21 +13,83 @@
       <h2>{{user.name}} </h2>
       <p>{{user.email}}</p>
       <h6>{{num_restaurant}} 已評論餐廳 </h6>
+      <h6>{{user.Followers.length}} Followers </h6>
+      <h6>{{user.Followings.length}} Followings </h6>
       <a class="btn btn-primary" href="/users/{{user.id}}/edit">Edit</a>
     </div>
   </div>
 </div>
+<div class="follower-container row">
+  <div class="col-md-6">
+    <h6 style="padding-left: 1rem;">{{user.Followers.length}} Followers</h6>
+    <hr />
 
-<div class="comment-profiles" style="border-width:2px; border-style:solid; border-color: #d1cece">
+    <div class="follower-list">
+      <div class="restaurant-container"
+        style="padding: 1rem; display: grid; grid-template-columns: repeat(5, 1fr); gap:5px;">
+        {{#each user.Followers}}
+        <div class="profile-followers" style="text-align: center; max-width: 40px;">
+          <a href="/users/{{this.id}}">
+            {{#if this.image}}
+            <img class="img-responsive mb-5" alt="Avatar" src="{{this.image}}" style="max-width: 100%; height: auto; background-repeat: no-repeat;
+                      background-position: center center;
+                      background-size: cover; transition: opacity 0.5s; opacity: 0;" onload="this.style.opacity = 1;"
+              alt="{{this.name}}" aria-label="{{this.name}}">
+            {{else}}
+            <img class="img-responsive mb-5" alt="Avatar" src="/views/users/non_user.png" style="max-width: 100%; height: auto; background-repeat: no-repeat;
+                      background-position: center center;
+                      background-size: cover; transition: opacity 0.5s; opacity: 0;" onload="this.style.opacity = 1;"
+              alt="{{this.name}}" aria-label="{{this.name}}">
+            {{/if}}
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+
+    <div class="col">
+      <h6 style="padding-left: 1rem;">{{user.Followings.length}} Followings</h6>
+      <hr />
+    </div>
+    <div class="following-list">
+      <div class="restaurant-container"
+        style="padding: 1rem; display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;">
+        {{#each user.Followings}}
+        <div class="profile-followers" style="text-align: center; max-width: 40px;">
+          <a href="/users/{{this.id}}">
+            {{#if this.image}}
+            <img class="img-responsive mb-5" alt="Avatar" src="{{this.image}}" style="max-width: 100%; height: auto; background-repeat: no-repeat;
+                                    background-position: center center;
+                                    background-size: cover; transition: opacity 0.5s; opacity: 0;"
+              onload="this.style.opacity = 1;" alt="{{this.name}}" aria-label="{{this.name}}">
+            {{else}}
+            <img class="img-responsive mb-5" alt="Avatar" src="/views/users/non_user.png" style="max-width: 100%; height: auto; background-repeat: no-repeat;
+                                    background-position: center center;
+                                    background-size: cover; transition: opacity 0.5s; opacity: 0;"
+              onload="this.style.opacity = 1;" alt="{{this.name}}" aria-label="{{this.name}}">
+            {{/if}}
+          </a>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="comment-profiles">
   <div style="padding-top:1rem;background-color:#f6f2f2;">
     <h6 style="padding-left:1rem"> {{num_restaurant}} 已評論餐廳</h6>
-    <hr>
+    <hr />
   </div>
   <div class="restaurant-container" style="padding-top: 1rem; padding-left: 1rem; padding-right: 1rem; display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;">
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;">
     {{#each restaurant}}
-    <div class="profile-restaurant" style="text-align: center; max-width: 120px;">
+    <div class="profile-restaurant" style="text-align: center; max-width: 140px;">
       <a href="/restaurants/{{this.id}}">
         <img class="img-responsive mb-5" alt="Avatar" src="{{this.image}}" style="max-width: 100%; height: auto; background-repeat: no-repeat;
           background-position: center center;
@@ -37,5 +99,25 @@
     </div>
     {{/each}}
   </div>
+</div>
 
+<div class="fav-profiles">
+  <div style="padding-top:1rem;background-color:#f6f2f2;">
+    <h6 style="padding-left:1rem"> {{user.FavoritedRestaurants.length}} 已收藏餐廳</h6>
+    <hr />
+  </div>
+  <div class="restaurant-container" style="padding-top: 1rem; padding-left: 1rem; padding-right: 1rem; display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;">
+    {{#each user.FavoritedRestaurants}}
+    <div class="profile-restaurant" style="text-align: center; max-width: 140px;">
+      <a href="/restaurants/{{this.id}}">
+        <img class="img-responsive mb-5" alt="Avatar" src="{{this.image}}" style="max-width: 100%; height: auto; background-repeat: no-repeat;
+          background-position: center center;
+          background-size: cover; transition: opacity 0.5s; opacity: 0;" onload="this.style.opacity = 1;"
+          alt="{{this.name}}" aria-label="{{this.name}}">
+      </a>
+    </div>
+    {{/each}}
+  </div>
 </div>

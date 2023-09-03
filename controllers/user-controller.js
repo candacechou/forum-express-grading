@@ -38,7 +38,13 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return Promise.all([
-      User.findByPk(req.params.id),
+      User.findByPk(req.params.id, {
+        include: [
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' }
+        ]
+      }),
       Comment.findAll({
         where: { userId: req.params.id },
         raw: true
