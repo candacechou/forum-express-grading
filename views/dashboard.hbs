@@ -7,8 +7,8 @@
 
   <ul>
     <li>瀏覽次數： {{restaurant.viewCount}}</li>
-    <li>收藏次數： {{numFavorite}}</li>
-    <li>喜愛次數： {{numLike}}</li>
-    <li>評論次數： {{numComment}}</li>
+    <li>收藏次數： {{restaurant.FavoritedUsers.length}}</li>
+    <li>喜愛次數： {{restaurant.LikedUsers.length}}</li>
+    <li>評論次數： {{restaurant.Comments.length}}</li>
   </ul>
   <a class="btn btn-outline-secondary" href="/restaurants/{{restaurant.id}}">Back</a>

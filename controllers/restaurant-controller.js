@@ -74,11 +74,11 @@ const restaurantController = {
         { model: User, as: 'FavoritedUsers' },
         { model: User, as: 'LikedUsers' }
       ]
-    }).then(restaurant => {
-      if (!restaurant) throw new Error("Restaurant didn't exist!")
-      const data = restaurant.toJSON()
-      console.log(data)
-      res.render('dashboard', { restaurant: data, numFavorite: data.FavoritedUsers.length, numLike: data.LikedUsers.length, numComment: data.Comments.length })
+    }).then(restaurants => {
+      if (!restaurants) throw new Error("Restaurant didn't exist!")
+      const restaurant = restaurants.toJSON()
+
+      res.render('dashboard', { restaurant })
     }).catch(err => next(err))
   },
   getFeeds: (req, res, next) => {
