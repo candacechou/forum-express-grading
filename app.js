@@ -6,7 +6,7 @@ const flash = require('connect-flash')
 const session = require('express-session')
 const { pages, apis } = require('./routes')
 const passport = require('./config/passport')
-const { getUser } = require('./helpers/auth-helpers')
+// const { getUser } = require('./helpers/auth-helpers')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
