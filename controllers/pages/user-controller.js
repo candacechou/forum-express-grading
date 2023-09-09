@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs') // 載入 bcrypt
-const { Comment, User, Restaurant, Favorite, Like, Followship } = require('../models')
-const { localFileHandler } = require('../helpers/file-helpers')
+const { Comment, User, Restaurant, Favorite, Like, Followship } = require('../../models')
+const { localFileHandler } = require('../../helpers/file-helpers')
 const userController = {
   signUpPage: (req, res) => {
     res.render('signup')
@@ -38,7 +38,13 @@ const userController = {
   },
   getUser: (req, res, next) => {
     return Promise.all([
-      User.findByPk(req.params.id),
+      User.findByPk(req.params.id, {
+        include: [
+          { model: Restaurant, as: 'FavoritedRestaurants' },
+          { model: User, as: 'Followers' },
+          { model: User, as: 'Followings' }
+        ]
+      }),
       Comment.findAll({
         where: { userId: req.params.id },
         raw: true
@@ -97,15 +103,10 @@ const userController = {
     ]).then(([restaurant, favorite]) => {
       if (!restaurant) throw new Error("Restauarant didn't exist!")
       if (favorite) throw new Error('You have favorited this restaurant!')
-      return Promise.all([
-        Favorite.create({
-          userId: req.user.id,
-          restaurantId
-        }),
-        restaurant.increment({
-          numFavorite: 1
-        })
-      ]).then(() => { return res.redirect('back') })
+      return Favorite.create({
+        userId: req.user.id,
+        restaurantId
+      }).then(() => { return res.redirect('back') })
     })
       .catch(err => next(err))
   },
@@ -121,11 +122,8 @@ const userController = {
     ]).then(([favorite, restaurant]) => {
       if (!favorite) throw new Error("You haven't favorited this restaurant")
 
-      return Promise.all([
-        favorite.destroy(),
-        restaurant.decrement({
-          numFavorite: 1
-        })]).then(() => { return res.redirect('back') })
+      return favorite.destroy()
+        .then(() => { return res.redirect('back') })
     }).catch(err => next(err))
   },
 
@@ -142,15 +140,10 @@ const userController = {
     ]).then(([restaurant, like]) => {
       if (!restaurant) throw new Error("Restauarant didn't exist!")
       if (like) throw new Error('You have liked this restaurant!')
-      return Promise.all([
-        Like.create({
-          userId: req.user.id,
-          restaurantId
-        }),
-        restaurant.increment({
-          numLike: 1
-        })
-      ]).then(() => { return res.redirect('back') })
+      return Like.create({
+        userId: req.user.id,
+        restaurantId
+      }).then(() => { return res.redirect('back') })
     })
       .catch(err => next(err))
   },
@@ -166,11 +159,7 @@ const userController = {
     ]).then(([like, restaurant]) => {
       if (!like) throw new Error("You haven't liked this restaurant")
 
-      return Promise.all([
-        like.destroy(),
-        restaurant.decrement({
-          numLike: 1
-        })]).then(() => res.redirect('back'))
+      return like.destroy().then(() => res.redirect('back'))
     }).catch(err => next(err))
   },
   getTopUsers: (req, res, next) => {

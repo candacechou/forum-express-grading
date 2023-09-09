@@ -1,4 +1,4 @@
-const { Comment, User, Restaurant } = require('../models')
+const { Comment, User, Restaurant } = require('../../models')
 
 const commentController = {
   postComment: (req, res, next) => {
@@ -14,7 +14,6 @@ const commentController = {
       .then(([user, restaurant]) => {
         if (!user) throw new Error("User didn't exist!")
         if (!restaurant) throw new Error("Restaurant didn't exist!")
-        restaurant.increment({ numComment: 1 })
         return Comment.create({
           text,
           restaurantId,
@@ -32,9 +31,7 @@ const commentController = {
         if (!comment) throw new Error("Comment didn't exist!")
         return comment.destroy()
       })
-      .then(async deletedComment => {
-        const restaurant = await Restaurant.findByPk(deletedComment.restaurantId)
-        await restaurant.decrement({ numComment: 1 })
+      .then(deletedComment => {
         res.redirect(`/restaurants/${deletedComment.restaurantId}`)
       })
       .catch(err => next(err))
