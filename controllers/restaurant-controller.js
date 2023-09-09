@@ -110,7 +110,7 @@ const restaurantController = {
       .then(topRestaurants => {
         const restaurants = topRestaurants.map(r => ({
           ...r.toJSON(),
-          description: r.description.length >= 150 ? r.description.substring(0, 147) + '...' : r.description,
+          description: r.description ? (r.description.length >= 150 ? r.description.substring(0, 147) + '...' : r.description) : ' ',
           favoritedCount: r.FavoritedUsers.length,
           isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
         }))
@@ -119,7 +119,10 @@ const restaurantController = {
 
         res.render('top-restaurants', { restaurants })
       })
-      .catch(e => next(e))
+      .catch(e => {
+        console.log(e)
+        next(e)
+      })
   }
 }
 module.exports = restaurantController
