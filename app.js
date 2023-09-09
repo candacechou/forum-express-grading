@@ -32,7 +32,7 @@ app.use((req, res, next) => {
   res.locals.user = req.user
   next()
 })
-
+app.use(express.json())
 app.use('/api', apis)
 app.use(pages)
 
