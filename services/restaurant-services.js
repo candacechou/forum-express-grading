@@ -1,4 +1,4 @@
-const { Restaurant, Category } = require('../models')
+const { Restaurant, Category, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantServices = {
   getRestaurants: (req, cb) => {
@@ -36,6 +36,56 @@ const restaurantServices = {
           pagination: getPagination(limit, page, restaurants.count)
         })
       }).catch(err => cb(err))
+  },
+
+  getRestaurant: (req, cb) => {
+    Restaurant.findByPk(req.params.id, {
+      include: [
+        Category,
+        { model: Comment, include: User },
+        { model: User, as: 'FavoritedUsers' },
+        { model: User, as: 'LikedUsers' }
+      ]
+    }).then(restaurant => {
+      if (!restaurant) throw new Error("Restuarant didn't exist!")
+      return restaurant.increment({
+        viewCount: 1
+      }).then(restaurant => {
+        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
+        const isLiked = restaurant.LikedUsers.some(fe => fe.id === req.user.id)
+        const data = restaurant.toJSON()
+        data.isFavorited = isFavorited
+        data.isLiked = isLiked
+        return cb(null, { data })
+      })
+    }).catch(err => cb(err))
+  },
+  getTopRestaurants: (req, cb) => {
+    Restaurant.findAll({
+      include: [{ model: User, as: 'FavoritedUsers' }]
+    })
+      .then(topRestaurants => {
+        const restaurants = topRestaurants.map(r => ({
+          ...r.toJSON(),
+          description: r.description ? (r.description.length >= 150 ? r.description.substring(0, 147) + '...' : r.description) : ' ',
+          favoritedCount: r.FavoritedUsers.length,
+          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
+        }))
+          .sort((a, b) => b.favoritedCount - a.favoritedCount)
+          .slice(0, 10)
+        return cb(null, { restaurants })
+      })
+      .catch(err => cb(err))
+  },
+  restaurantComment: (req, cb) => {
+    const restId = req.params.id
+    Comment.findAll({
+      where: {
+        restaurantId: restId
+      }
+    }).then(comments => {
+      cb(null, { comments })
+    }).catch(err => cb(err))
   }
 }
 

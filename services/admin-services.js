@@ -1,5 +1,5 @@
-const { Restaurant, Category } = require('../models')
-const { imgurFileHandler } = require('../helpers/file-helpers')
+const { Restaurant, Category, User } = require('../models')
+const { imgurFileHandler, localFileHandler } = require('../helpers/file-helpers')
 const adminServices = {
   getRestaurants: (req, cb) => {
     Restaurant.findAll({
@@ -35,7 +35,53 @@ const adminServices = {
       }))
       .then(newRestaurant => cb(null, { restaurant: newRestaurant }))
       .catch(err => cb(err))
+  },
+  putRestaurant: (req, cb) => {
+    const { name, tel, address, openingHours, description, categoryId } = req.body
+    if (!name) throw new Error('Restaurant name is required!')
+    const { file } = req
+    Promise.all([
+      Restaurant.findByPk(req.params.id),
+      localFileHandler(file)
+    ])
+      .then(([restaurant, filePath]) => {
+        if (!restaurant) throw new Error("Restaurant didn't exist!")
+        return restaurant.update({
+          name,
+          tel,
+          address,
+          openingHours,
+          description,
+          image: filePath || restaurant.image,
+          categoryId
+        })
+      })
+      .then(() => {
+        cb(null, {})
+      })
+      .catch(err => cb(err))
+  },
+  getUsers: (req, cb) => {
+    return User.findAll({
+      raw: true
+    }).then(users => {
+      cb(null, { users })
+    })
+      .catch(error => {
+        cb(error)
+      })
+  },
+  patchUser: (req, cb) => {
+    User.findByPk(req.params.id)
+      .then(user => {
+        if (!user) throw new Error("User didn't exist!")
+        if (user.email === 'root@example.com') {
+          throw new Error('禁止變更 root 權限')
+        }
+        user.update({
+          isAdmin: !user.isAdmin
+        }).then(() => { cb(null) })
+      }).catch(err => cb(err))
   }
 }
-
 module.exports = adminServices

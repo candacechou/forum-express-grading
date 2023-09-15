@@ -1,14 +1,14 @@
 <div class="row mb-5">
   <div class="col-md-12">
-    <h1>{{restaurant.name}}</h1>
-    <p>[{{restaurant.Category.name}}]</p>
+    <h1>{{data.name}}</h1>
+    <p>[{{data.Category.name}}]</p>
   </div>
   <hr>
 
   <ul>
-    <li>瀏覽次數： {{restaurant.viewCount}}</li>
-    <li>收藏次數： {{restaurant.FavoritedUsers.length}}</li>
-    <li>喜愛次數： {{restaurant.LikedUsers.length}}</li>
-    <li>評論次數： {{restaurant.Comments.length}}</li>
+    <li>瀏覽次數： {{data.viewCount}}</li>
+    <li>收藏次數： {{data.FavoritedUsers.length}}</li>
+    <li>喜愛次數： {{data.LikedUsers.length}}</li>
+    <li>評論次數： {{data.Comments.length}}</li>
   </ul>
-  <a class="btn btn-outline-secondary" href="/restaurants/{{restaurant.id}}">Back</a>
+  <a class="btn btn-outline-secondary" href="/restaurants/{{data.id}}">Back</a>

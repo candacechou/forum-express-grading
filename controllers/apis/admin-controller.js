@@ -8,6 +8,15 @@ const restaurantController = {
   },
   deleteRestaurant: (req, res, next) => {
     adminServices.deleteRestaurant(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  putRestaurant: (req, res, next) => {
+    adminServices.putRestaurant(req, err => err ? next(err) : res.json({ status: 'success' }))
+  },
+  getUsers: (req, res, next) => {
+    adminServices.getUsers(req, (err, users) => err ? next(err) : res.json({ status: 'success', users }))
+  },
+  patchUser: (req, res, next) => {
+    adminServices.patchUser(req, err => err ? next(err) : res.json({ status: 'success' }))
   }
 }
 module.exports = restaurantController

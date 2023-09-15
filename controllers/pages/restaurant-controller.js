@@ -5,42 +5,10 @@ const restaurantController = {
     restaurantServices.getRestaurants(req, (err, data) => err ? next(err) : res.render('restaurants', data))
   },
   getRestaurant: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category,
-        { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' },
-        { model: User, as: 'LikedUsers' }
-      ]
-
-    }).then(restaurant => {
-      if (!restaurant) throw new Error("Restuarant didn't exist!")
-      return restaurant.increment({
-        viewCount: 1
-      }).then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.some(f => f.id === req.user.id)
-
-        const isLiked = restaurant.LikedUsers.some(fe => fe.id === req.user.id)
-
-        res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
-      })
-    }).catch(err => next(err))
+    restaurantServices.getRestaurant(req, (err, data) => err ? next(err) : res.render('restaurant', data))
   },
-
   getDashboard: (req, res, next) => {
-    return Restaurant.findByPk(req.params.id, {
-      include: [
-        Category,
-        { model: Comment, include: User },
-        { model: User, as: 'FavoritedUsers' },
-        { model: User, as: 'LikedUsers' }
-      ]
-    }).then(restaurants => {
-      if (!restaurants) throw new Error("Restaurant didn't exist!")
-      const restaurant = restaurants.toJSON()
-
-      res.render('dashboard', { restaurant })
-    }).catch(err => next(err))
+    restaurantServices.getRestaurant(req, (err, data) => err ? next(err) : res.render('dashboard', data))
   },
   getFeeds: (req, res, next) => {
     return Promise.all([
@@ -68,26 +36,7 @@ const restaurantController = {
       .catch(err => next(err))
   },
   getTopRestaurants: (req, res, next) => {
-    return Restaurant
-      .findAll({
-        include: [{ model: User, as: 'FavoritedUsers' }]
-      })
-      .then(topRestaurants => {
-        const restaurants = topRestaurants.map(r => ({
-          ...r.toJSON(),
-          description: r.description ? (r.description.length >= 150 ? r.description.substring(0, 147) + '...' : r.description) : ' ',
-          favoritedCount: r.FavoritedUsers.length,
-          isFavorited: req.user && req.user.FavoritedRestaurants.some(fr => fr.id === r.id)
-        }))
-          .sort((a, b) => b.favoritedCount - a.favoritedCount)
-          .slice(0, 10)
-
-        res.render('top-restaurants', { restaurants })
-      })
-      .catch(e => {
-        console.log(e)
-        next(e)
-      })
+    restaurantServices.getTopRestaurants(req, (err, data) => err ? next(err) : res.render('top-restaurants', { restaurants: data }))
   }
 }
 module.exports = restaurantController
