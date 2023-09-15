@@ -9,8 +9,14 @@ const restaurantController = {
   getTopRestaurants: (req, res, next) => {
     restaurantServices.getTopRestaurants(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
   },
-  restaurantComment: (req, res, next) => {
-    restaurantServices.restaurantComment(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  getRestaurantComment: (req, res, next) => {
+    restaurantServices.getRestaurantComment(req, (err, data) => err ? next(err) : res.json({ status: 'success', data }))
+  },
+  getFavoritedRestaurant: (req, res, next) => {
+    restaurantServices.getFavoritedRestaurant(req, (err, restaurant) => err ? next(err) : res.json({ status: 'success', restaurant }))
+  },
+  getCommentRestaurant: (req, res, next) => {
+    restaurantServices.getCommentRestaurant(req, (err, restaurant) => err ? next(err) : res.json({ status: 'success', restaurant }))
   }
 }
 module.exports = restaurantController

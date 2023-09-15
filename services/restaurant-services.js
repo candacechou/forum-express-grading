@@ -1,4 +1,4 @@
-const { Restaurant, Category, User, Comment } = require('../models')
+const { Restaurant, Category, User, Comment, Favorite } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const restaurantServices = {
   getRestaurants: (req, cb) => {
@@ -77,14 +77,35 @@ const restaurantServices = {
       })
       .catch(err => cb(err))
   },
-  restaurantComment: (req, cb) => {
-    const restId = req.params.id
+
+  getCommentRestaurant: (req, cb) => {
     Comment.findAll({
-      where: {
-        restaurantId: restId
-      }
-    }).then(comments => {
-      cb(null, { comments })
+      where: { userId: req.params.userId },
+      raw: true
+    }).then(comment => {
+      const commentResID = comment.map(obj => obj.restaurantId)
+      Restaurant.findAll({
+        where: {
+          id: commentResID
+        },
+        raw: true
+      }).then(restaurant => cb(null, restaurant))
+    }).catch(err => { cb(err) })
+  },
+
+  getFavoritedRestaurant: (req, cb) => {
+    const userId = req.params.userId
+    Favorite.findAll({
+      where: { userId: userId },
+      raw: true
+    }).then(favorite => {
+      const FavoriteResID = favorite.map(obj => obj.restaurantId)
+      Restaurant.findAll({
+        where: {
+          id: FavoriteResID
+        },
+        raw: true
+      }).then(restaurant => cb(null, restaurant))
     }).catch(err => cb(err))
   }
 }

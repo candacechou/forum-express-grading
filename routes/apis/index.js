@@ -17,7 +17,9 @@ router.post('/comments', authenticated, commentController.postComment)
 router.get('/comments/top', authenticated, commentController.getTopComments)
 router.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 
-router.get('/comments/restaurants/:id', authenticated, restController.restaurantComment)
+router.get('/comments/restaurants/:id', authenticated, restController.getRestaurantComment)
+router.get('/comments/:userId', authenticated, commentController.getUserComments)
+
 router.get('/restaurants/top', authenticated, restController.getTopRestaurants)
 router.get('/restaurants/:id', authenticated, restController.getRestaurant)
 router.delete('/restaurants/:id', adminController.deleteRestaurant)
@@ -34,14 +36,13 @@ router.post('/like/:restaurantId', authenticated, userController.addLike)
 router.delete('/like/:restaurantId', authenticated, userController.removeLike)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
-router.get('/users/following/:userId', authenticated, userController.followingUser)
+router.get('/users/following/:userId', authenticated, userController.getFollowingUser)
 
-router.get('/users/followed/:userId', authenticated, userController.followedUser)
+router.get('/users/followed/:userId', authenticated, userController.getFollowedUser)
 
-router.get('/users/comments', authenticated, userController.getUserComments)
-router.get('/users/comments/restaurants', authenticated, userController.getUserCommentRestaurant)
+router.get('/restaurants/comments/:userId', authenticated, restController.getCommentRestaurant)
 
-router.get('/users/favorites/restaurants', authenticated, userController.getFavoritedRestuarant)
+router.get('/restaurants/favorites/:userId', authenticated, restController.getFavoritedRestaurant)
 
 router.use('/', apiErrorHandler)
 module.exports = router

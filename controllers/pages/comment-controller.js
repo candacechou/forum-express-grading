@@ -7,6 +7,9 @@ const commentController = {
   },
   deleteComment: (req, res, next) => {
     commentServices.deleteComment(req, err => err ? next(err) : res.redirect('back'))
+  },
+  getUserComments: (req, res, next) => {
+    commentServices.getuserComments(req, (err, comments) => err ? next(err) : res.json({ status: 'success', comments }))
   }
 }
 

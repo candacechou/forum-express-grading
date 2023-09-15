@@ -40,6 +40,25 @@ const commentServices = {
         comment.destroy().then(() => cb(null))
       })
       .catch(err => cb(err))
+  },
+  getUserComments: (req, cb) => {
+    const userId = req.params.userId
+    Comment.findAll({
+      where: { userId: userId },
+      raw: true,
+      nest: true
+    }).then(comment => cb(null, comment))
+      .catch(err => cb(err))
+  },
+  getRestaurantComment: (req, cb) => {
+    const restId = req.params.id
+    Comment.findAll({
+      where: {
+        restaurantId: restId
+      }
+    }).then(comments => {
+      cb(null, { comments })
+    }).catch(err => cb(err))
   }
 
 }

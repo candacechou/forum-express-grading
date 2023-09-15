@@ -153,46 +153,8 @@ const userServices = {
       })
       .catch(err => cb(err))
   },
-  userCommentRestaurant: (req, cb) => {
-    Comment.findAll({
-      where: { userId: req.user.id },
-      raw: true
-    }).then(comment => {
-      const commentResID = comment.map(obj => obj.restaurantId)
-      Restaurant.findAll({
-        where: {
-          id: commentResID
-        },
-        raw: true
-      }).then(restaurant => cb(null, restaurant))
-    }).catch(err => { cb(err) })
-  },
 
-  userFavoritedRestuarant: (req, cb) => {
-    const userId = req.user.id
-    Favorite.findAll({
-      where: { userId: userId },
-      raw: true
-    }).then(favorite => {
-      const FavoriteResID = favorite.map(obj => obj.restaurantId)
-      Restaurant.findAll({
-        where: {
-          id: FavoriteResID
-        },
-        raw: true
-      }).then(restaurant => cb(null, restaurant))
-    }).catch(err => cb(err))
-  },
-  userComments: (req, cb) => {
-    const userId = req.user.id
-    Comment.findAll({
-      where: { userId: userId },
-      raw: true,
-      nest: true
-    }).then(comment => cb(null, comment))
-      .catch(err => cb(err))
-  },
-  followingUser: (req, cb) => {
+  getFollowingUser: (req, cb) => {
     const userId = req.params.userId
     User.findByPk(userId, {
       include: [
@@ -206,7 +168,7 @@ const userServices = {
     }).catch(err => cb(err))
   },
 
-  followedUser: (req, cb) => {
+  getFollowedUser: (req, cb) => {
     const userId = req.params.userId
     User.findByPk(userId, {
       include: [

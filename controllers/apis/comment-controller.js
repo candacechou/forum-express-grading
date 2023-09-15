@@ -8,6 +8,9 @@ const commentController = {
   },
   deleteComment: (req, res, next) => {
     commentServices.deleteComment(req, err => err ? next(err) : res.json({ status: 'success' }))
+  },
+  getUserComments: (req, res, next) => {
+    commentServices.getUserComments(req, (err, comments) => err ? next(err) : res.json({ status: 'success', comments }))
   }
 }
 

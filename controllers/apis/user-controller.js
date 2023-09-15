@@ -28,11 +28,11 @@ const userController = {
     userServices.removeFavorite(req, err => err ? next(err) : res.json({ status: 'success' }))
   },
 
-  followingUser: (req, res, next) => {
-    userServices.followingUser(req, (err, following) => err ? next(err) : res.json({ status: 'success', following }))
+  getFollowingUser: (req, res, next) => {
+    userServices.getFollowingUser(req, (err, following) => err ? next(err) : res.json({ status: 'success', following }))
   },
-  followedUser: (req, res, next) => {
-    userServices.followedUser(req, (err, followers) => err ? next(err) : res.json({ status: 'success', followers }))
+  getFollowedUser: (req, res, next) => {
+    userServices.getFollowedUser(req, (err, followers) => err ? next(err) : res.json({ status: 'success', followers }))
   },
 
   addFollowing: (req, res, next) => {
@@ -52,15 +52,6 @@ const userController = {
   },
   putUser: (req, res, next) => {
     userServices.putUser(req, err => err ? next(err) : res.json({ status: 'success' }))
-  },
-  getFavoritedRestuarant: (req, res, next) => {
-    userServices.userFavoritedRestuarant(req, (err, restaurant) => err ? next(err) : res.json({ status: 'success', restaurant }))
-  },
-  getUserComments: (req, res, next) => {
-    userServices.userComments(req, (err, comments) => err ? next(err) : res.json({ status: 'success', comments }))
-  },
-  getUserCommentRestaurant: (req, res, next) => {
-    userServices.userCommentRestaurant(req, (err, restaurant) => err ? next(err) : res.json({ status: 'success', restaurant }))
   }
 
 }
